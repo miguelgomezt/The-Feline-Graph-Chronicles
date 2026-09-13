@@ -1,6 +1,7 @@
 package algoritmos.search;
 
 import core.GridMap;
+import core.PathResult;
 
 import java.lang.annotation.Target;
 import java.util.Arrays;
@@ -58,8 +59,8 @@ public class BreadthFirstSearch {
             int cur = queue[head];
             head++;
 
-            int row = grid.rowOf[cur];
-            int col = grid.colOf[cur];
+            int row = grid.rowOf(cur);
+            int col = grid.colOf(cur);
 
             for (int d = 0; d < 4; d++){
                 int newRow = row + DELTA_ROW[d];

@@ -4,14 +4,14 @@ public class GridMap {
     private final int rows;
     private final int cols;
     private final boolean[] bomb;
-    private final int starIndex;
+    private final int startIndex;
     private final int targetIndex;
 
-    public GridMap(int rows, int cols, boolean[] bomb, int starIndex, int targetIndex) {
+    public GridMap(int rows, int cols, boolean[] bomb, int startIndex, int targetIndex) {
         this.rows = rows;
         this.cols = cols;
         this.bomb = bomb;
-        this.starIndex = starIndex;
+        this.startIndex = startIndex;
         this.targetIndex = targetIndex;
     }
     public int getRows() {
@@ -24,8 +24,8 @@ public class GridMap {
     public int getCellCount() {
         return rows * cols;
     }
-    public int getStarIndex() {
-        return starIndex;
+    public int getStartIndex() {
+        return startIndex;
     }
     public int getTargetIndex() {
         return targetIndex;
