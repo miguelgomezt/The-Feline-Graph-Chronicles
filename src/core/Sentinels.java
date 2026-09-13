@@ -8,11 +8,11 @@ con los metodos de esta clase.
 
 public class Sentinels {
     /** Significa no hay ruta, para las misiones 2, 3, 4 */
-    public static final long NO_ROUTE = Long.MAX_VALUE;
+    public static final long NO_ROUTE = Long.MIN_VALUE;
 
     /** Es el mismo sentinela pero para la mision 1, pero con int
      * porque cuenta movimientos.*/
-    public static final long NO_ROUTE_INT = Integer.MIN_VALUE;
+    public static final int NO_ROUTE_INT = Integer.MIN_VALUE;
 
     /** Este significa no acotado principalmente para la mision 3*/
     public static final long UNBOUNDED = Long.MAX_VALUE;
