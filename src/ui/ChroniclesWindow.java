@@ -1,7 +1,9 @@
 package ui;
 
+import mission.AccountsMission;
 import mission.MinefieldMission;
 import mission.Mission;
+import mission.NetworkMission;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -27,6 +29,10 @@ public class ChroniclesWindow extends JFrame {
 
         List<Mission> misiones = new ArrayList<Mission>();
         misiones.add(new MinefieldMission());
+        misiones.add(new AccountsMission());
+        misiones.add(new NetworkMission());
+        // Cuando Persona 2 tenga lista su StashMission (Mision 3), se agrega aqui:
+        // misiones.add(new StashMission());
 
         JTabbedPane pestanas = new JTabbedPane();
         pestanas.setFont(Theme.NORMAL);
@@ -35,11 +41,23 @@ public class ChroniclesWindow extends JFrame {
 
         for (int i = 0; i < misiones.size(); i++) {
             Mission mision = misiones.get(i);
-            pestanas.addTab("Mision " + (i + 1), new MissionPanel(mision));
+            pestanas.addTab(etiquetaCorta(mision), new MissionPanel(mision));
             pestanas.setToolTipTextAt(i, mision.getName());
         }
 
         add(pestanas, BorderLayout.CENTER);
+    }
+
+    /*
+     * El titulo de la pestaña sale del propio getName() de la mision
+     * ("Mision 4: Reconectar la red." -> "Mision 4"), no de la posicion
+     * en la lista. Asi no importa el orden en que se agreguen las
+     * misiones ni que todavia falte alguna por agregar (Mision 3).
+     */
+    private String etiquetaCorta(Mission mision) {
+        String nombre = mision.getName();
+        int dosPuntos = nombre.indexOf(':');
+        return dosPuntos > 0 ? nombre.substring(0, dosPuntos) : nombre;
     }
 
     private JPanel construirEncabezado() {
