@@ -1,4 +1,7 @@
 package io;
 
-public class InputFormatException {
+public class InputFormatException extends RuntimeException {
+    public InputFormatException(String message) {
+        super(message);
+    }
 }
