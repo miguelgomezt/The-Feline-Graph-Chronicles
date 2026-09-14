@@ -15,43 +15,41 @@ public class TokenStream {
         if(text == null){
             throw new NullPointerException("La entrada esta vacia.");
         }
-        String trimmed = text.trim();                // quita espacios y saltos al inicio y al final
-        if (trimmed.isEmpty()) {                     // si no quedo nada, no hay tokens
+        String trimmed = text.trim();// quita espacios y saltos al inicio y al final
+        if (trimmed.isEmpty()) { // si no quedo nada, no hay tokens
             this.tokens = new String[0];
         } else {
             // "\\s+" es una expresion regular que significa "uno o mas espacios en blanco".
-            // Cubre espacios, tabulaciones y saltos de linea, asi que las lineas en
-            // blanco y los espacios sobrantes desaparecen solos. Eso es exactamente
-            // lo que pide la seccion 2.2.
+            // Cubre espacios, tabulaciones y saltos de linea.
             this.tokens = trimmed.split("\\s+");
         }
-        this.position = 0;                           // arrancamos en el primer token
+        this.position = 0;  // tomamos el primer token.
     }
 
-    /** true si todavia quedan tokens por leer. */
+    /** true si todavia quedan tokens por leer */
     public boolean hasNext() {
         return position < tokens.length;
     }
 
-    /** Cuantos tokens quedan sin leer. Sirve para validar antes de leer un bloque. */
+    /** Cuantos tokens quedan sin leer. Sirve para validar antes de leer un bloque */
     public int remaining() {
         return tokens.length - position;
     }
 
     /**
-     * Entrega el siguiente token convertido a entero y avanza el cursor.
+     * Entregamos el siguiente token convertido a entero y avanza el cursor.
      * Si no quedan tokens, o si el token no es un numero, lanza
-     * InputFormatException con un mensaje que la GUI puede mostrar tal cual.
+     * InputFormatException.
      */
     public int nextInt() {
-        if (!hasNext()) {                            // se acabo la entrada antes de tiempo
+        if (!hasNext()) {   // se acabo la entrada antes de tiempo
             throw new InputFormatException(
                     "La entrada termino antes de lo esperado: faltan datos.");
         }
-        String token = tokens[position];             // tomamos el token actual
-        position++;                                  // y avanzamos el cursor
+        String token = tokens[position]; // tomamos el token actual
+        position++; // y avanzamos el cursor
         try {
-            return Integer.parseInt(token);          // intentamos convertirlo a numero
+            return Integer.parseInt(token);// intentamos convertirlo a numero
         } catch (NumberFormatException e) {
             // El token no era un numero. Decimos cual fue y en que posicion,
             // para que el usuario pueda encontrarlo en su texto.
@@ -62,9 +60,8 @@ public class TokenStream {
     }
 
     /**
-     * Igual que nextInt() pero ademas verifica que el valor este en un rango.
-     * Sirve para atrapar entradas absurdas (una fila negativa, por ejemplo)
-     * antes de que revienten un arreglo mas adelante con un error incomprensible.
+     * De la misma manera que nextInt() pero ademas verifica que el valor este en un rango.
+     * Sirve para atrapar entradas absurdas (una fila negativa)
      */
     public int nextIntInRange(int min, int max, String nombreDelDato) {
         int value = nextInt();                       // leemos normalmente
@@ -78,7 +75,7 @@ public class TokenStream {
 
     /**
      * Entrega el siguiente token como long.
-     * La Mision 1 no lo usa, pero las misiones 2, 3 y 4 si: el enunciado exige
+     * La Mision 1 no lo usa, pero las misiones 2, 3 y 4 si: Tomamos
      * long para los pesos, y un peso de 1.000.000 leido como int se desborda al
      * acumularlo 100.000 veces.
      */
