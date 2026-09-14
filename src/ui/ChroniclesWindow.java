@@ -1,4 +1,63 @@
 package ui;
 
-public class ChroniclesWindow {
+import mission.MinefieldMission;
+import mission.Mission;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChroniclesWindow extends JFrame {
+
+    public ChroniclesWindow() {
+        setTitle("The Feline Graph Chronicles - Universidad EIA");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1100, 720);
+        setLocationRelativeTo(null);
+
+        getContentPane().setBackground(Theme.FONDO);
+        setLayout(new BorderLayout());
+
+        add(construirEncabezado(), BorderLayout.NORTH);
+
+        List<Mission> misiones = new ArrayList<Mission>();
+        misiones.add(new MinefieldMission());
+
+        JTabbedPane pestanas = new JTabbedPane();
+        pestanas.setFont(Theme.NORMAL);
+        pestanas.setBackground(Theme.PANEL);
+        pestanas.setForeground(Theme.TEXTO);
+
+        for (int i = 0; i < misiones.size(); i++) {
+            Mission mision = misiones.get(i);
+            pestanas.addTab("Mision " + (i + 1), new MissionPanel(mision));
+            pestanas.setToolTipTextAt(i, mision.getName());
+        }
+
+        add(pestanas, BorderLayout.CENTER);
+    }
+
+    private JPanel construirEncabezado() {
+        JPanel encabezado = new JPanel(new BorderLayout());
+        encabezado.setBackground(Theme.FONDO);
+        encabezado.setBorder(BorderFactory.createEmptyBorder(14, 16, 6, 16));
+
+        JLabel titulo = new JLabel("The Feline Graph Chronicles");
+        titulo.setFont(Theme.TITULO);
+        titulo.setForeground(Theme.HEROINAS);
+
+        JLabel subtitulo = new JLabel(
+                "Pola y Minerva contra Limon - Lenguajes y Compiladores, Universidad EIA");
+        subtitulo.setFont(Theme.NORMAL);
+        subtitulo.setForeground(Theme.TEXTO_TENUE);
+
+        encabezado.add(titulo, BorderLayout.NORTH);
+        encabezado.add(subtitulo, BorderLayout.SOUTH);
+        return encabezado;
+    }
 }
