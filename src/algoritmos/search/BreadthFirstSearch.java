@@ -55,7 +55,7 @@ public class BreadthFirstSearch {
         distances[start] = 0;
         parent[start] = -1;
 
-        while (head < total) {
+        while (head < tail) {
             int cur = queue[head];
             head++;
 
@@ -77,7 +77,7 @@ public class BreadthFirstSearch {
 
                 visited[neighbor] = true;
                 distances[neighbor] = distances[cur] + 1;
-                parent[cur] = neighbor;
+                parent[neighbor] = cur;
 
                 //Si el vecino NINA terminamos: No hace falta seguir
                 if(neighbor == target){
