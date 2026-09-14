@@ -63,6 +63,7 @@ public class TokenStream {
      * De la misma manera que nextInt() pero ademas verifica que el valor este en un rango.
      * Sirve para atrapar entradas absurdas (una fila negativa)
      */
+
     public int nextIntInRange(int min, int max, String nombreDelDato) {
         int value = nextInt();                       // leemos normalmente
         if (value < min || value > max) {            // y validamos el rango
@@ -94,5 +95,20 @@ public class TokenStream {
                             + "\" en la posicion " + position + " de la entrada.");
         }
     }
+    /**
+     * Igual que nextLong() pero ademas verifica que el valor este en un rango.
+     * Lo usan las misiones 2, 3 y 4 para validar los pesos de las conexiones
+     * (por ejemplo 0 a 1.000.000, o -1000 a 1000 segun la mision).
+     */
+    public long nextLongInRange(long min, long max, String nombreDelDato) {
+        long value = nextLong();
+        if (value < min || value > max) {
+            throw new InputFormatException(
+                    nombreDelDato + " debe estar entre " + min + " y " + max
+                            + ", pero se recibio " + value + ".");
+        }
+        return value;
+    }
 }
+
 
