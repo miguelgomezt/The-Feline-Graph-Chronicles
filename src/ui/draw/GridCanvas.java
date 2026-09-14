@@ -12,7 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-public class GridCanvas extends JPanel {
+public class GridCanvas extends JPanel implements MissionCanvas {
 
     private static final int LIMITE = 50;
 
