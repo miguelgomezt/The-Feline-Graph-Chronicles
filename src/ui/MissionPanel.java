@@ -6,8 +6,6 @@ import ui.draw.GraphCanvas;
 import ui.draw.GridCanvas;
 import ui.draw.MatrixPanel;
 import ui.draw.MissionCanvas;
-import ui.draw.StashCanvas;
-import mission.StashMission;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -51,9 +49,9 @@ public class MissionPanel extends JPanel {
             this.canvas = graphCanvas;
             this.dibujoCanvas = graphCanvas;
         } else if (mission instanceof StashMission) {
-            StashCanvas stashCanvas = new StashCanvas();
-            this.canvas = stashCanvas;
-            this.dibujoCanvas = stashCanvas;
+        MatrixPanel matrixPanel = new MatrixPanel();
+        this.canvas = matrixPanel;
+        this.dibujoCanvas = matrixPanel;
         } else {
             GridCanvas gridCanvas = new GridCanvas();
             this.canvas = gridCanvas;

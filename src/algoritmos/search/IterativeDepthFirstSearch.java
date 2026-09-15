@@ -77,13 +77,16 @@ public class IterativeDepthFirstSearch {
             visited[current] = true;
             parent[current] = from;
 
-
+            /**
+             * Si llegamos a NINA, la profundidad es la cantidad
+             * de movimientos con la que llegamos.
+             */
             if(current==target){
                 return new PathResult(depth, buildPath(parent, target));
             }
 
-            int row = grid.rowOf(current);
-            int col = grid.colOf(current);
+            int row = grid.rowOf(current); //Lo pasamos fila columna
+            int col = grid.colOf(current); //para poder movernos por el tablero.
 
             /**Aqui esta el truco de el orden, recorremos las
              * direcciones de atras a adelante para hacer su recorrido.
