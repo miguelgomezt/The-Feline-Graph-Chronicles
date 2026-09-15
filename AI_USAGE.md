@@ -4,7 +4,9 @@
 
 - **Claude (Anthropic)** — Persona 1: diseño de paquetes, BFS y DFS iterativo,
   lectura de la entrada, interfaz Swing y configuración de Maven.
-- (Persona 2: completar)
+- **Claude (Anthropic)** — Persona 3: Dijkstra, Kruskal y Union-Find, los parsers
+  de las Misiones 2 y 4 (AccountsReader, NetworkReader) y el motor de dibujo
+  compartido (GraphLayout, GraphCanvas, DrawingLimits).
 - (Persona 3: completar)
 
 Todo el código fue revisado, corregido y probado por los integrantes.
@@ -40,8 +42,15 @@ Todo el código fue revisado, corregido y probado por los integrantes.
    roto la Misión 3. Se corrigió dejando `NO_ROUTE = Long.MIN_VALUE`: como en esa misión
    se maximiza, el valor que representa "sin respuesta" debe perder contra cualquier
    resultado real.
+   
+4. **Pestañas de la ventana rotuladas por posición en la lista, no por
+   misión real.** El primer borrador de ChroniclesWindow le ponia a cada
+   pestaña el titulo "Misión " + (indice + 1). Como la Misión 3 todavia no
+   esta agregada, la pestaña de NetworkMission (que es la Misión 4) habria
+   quedado rotulada como "Misión 3". Se corrigio sacando el número del
+   propio getName() de cada misión en vez de su posición en la lista.   
 
-(Personas 2 y 3: agregar los suyos)
+(Persona 3: agregar los suyos)
 
 ## Qué aprendió cada integrante
 
@@ -51,6 +60,13 @@ avanza por niveles, mientras el DFS llega a Nina en 32 movimientos en vez de 18.
 cómo reemplazar la recursión por una pila explícita y por qué aquí es obligatorio: con
 un millón de celdas, un DFS recursivo desborda la pila de la JVM.
 
+**Persona 3 (JJ).** Por qué Dijkstra necesita pesos no negativos: si un nodo
+ya "sale" de la cola de prioridad se asume que su distancia es definitiva, y
+eso solo es verdad si no hay pesos negativos que puedan mejorarla despues.
+Tambien la diferencia entre Kruskal y Prim (Kruskal ordena TODAS las aristas
+de una vez; Prim crece un árbol desde un nodo con una cola de prioridad de
+aristas frontera), y por qué quitar la compresión de caminos del union-find
+no rompe la correctitud pero si el tiempo de ejecución.
 (Persona 2: completar)
 
 (Persona 3: completar)
