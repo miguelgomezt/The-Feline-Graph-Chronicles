@@ -7,7 +7,7 @@
 - **Claude (Anthropic)** — Persona 3: Dijkstra, Kruskal y Union-Find, los parsers
   de las Misiones 2 y 4 (AccountsReader, NetworkReader) y el motor de dibujo
   compartido (GraphLayout, GraphCanvas, DrawingLimits).
-- (Persona 3: completar)
+- (Persona 2: completar)
 
 Todo el código fue revisado, corregido y probado por los integrantes.
 
@@ -50,7 +50,7 @@ Todo el código fue revisado, corregido y probado por los integrantes.
    quedado rotulada como "Misión 3". Se corrigio sacando el número del
    propio getName() de cada misión en vez de su posición en la lista.   
 
-(Persona 3: agregar los suyos)
+(Persona 2: agregar los suyos)
 
 ## Qué aprendió cada integrante
 
@@ -60,7 +60,7 @@ avanza por niveles, mientras el DFS llega a Nina en 32 movimientos en vez de 18.
 cómo reemplazar la recursión por una pila explícita y por qué aquí es obligatorio: con
 un millón de celdas, un DFS recursivo desborda la pila de la JVM.
 
-**Persona 3 (JJ).** Por qué Dijkstra necesita pesos no negativos: si un nodo
+**Persona 3 (Juan José Díaz).** Por qué Dijkstra necesita pesos no negativos: si un nodo
 ya "sale" de la cola de prioridad se asume que su distancia es definitiva, y
 eso solo es verdad si no hay pesos negativos que puedan mejorarla despues.
 Tambien la diferencia entre Kruskal y Prim (Kruskal ordena TODAS las aristas
