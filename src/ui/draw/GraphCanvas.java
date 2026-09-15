@@ -5,6 +5,7 @@ import core.Graph;
 import core.MstResult;
 import mission.AccountsMission;
 import mission.NetworkMission;
+import mission.StashMission;
 import ui.Theme;
 
 import javax.swing.JPanel;
@@ -56,6 +57,8 @@ public class GraphCanvas extends JPanel implements MissionCanvas {
             pintarAccounts(g2, (AccountsMission.AccountsDrawing) dibujo);
         } else if (dibujo instanceof NetworkMission.NetworkDrawing) {
             pintarNetwork(g2, (NetworkMission.NetworkDrawing) dibujo);
+        } else if (dibujo instanceof StashMission.StashDrawing) {
+            pintarStash(g2, (StashMission.StashDrawing) dibujo);
         } else {
             mensaje(g2, "No se sabe dibujar este tipo de caso.");
         }
@@ -101,6 +104,32 @@ public class GraphCanvas extends JPanel implements MissionCanvas {
         dibujarNodos(g2, positions, n, -1, -1);
     }
 
+    // MISION 3: el enunciado pide dibujar el grafo resaltando la ruta que logra
+    // el maximo, y cuando la respuesta es "Infinite churun!" resaltar en cambio
+    // el ciclo responsable. Por eso se pintan con colores distintos.
+    private void pintarStash(Graphics2D g2, StashMission.StashDrawing dibujo) {
+        Graph graph = dibujo.getGraph();
+        int n = graph.getNodeCount();
+
+        if (DrawingLimits.exceedsShortestPathLimit(n)) {
+            mensaje(g2, DrawingLimits.shortestPathOmittedMessage(n));
+            return;
+        }
+
+        Point2D.Double[] positions = layoutFor(n);
+
+        // Si hay ciclo no acotado se resalta el ciclo (en color de Limon);
+        // si no, se resalta la ruta de churun maximo (en color de las heroinas).
+        int[] cycle = dibujo.getCycle();
+        if (cycle != null) {
+            dibujarAristas(g2, graph, positions, edgeKeysOfPath(cycle), Theme.LIMON);
+        } else {
+            dibujarAristas(g2, graph, positions, edgeKeysOfPath(dibujo.getRoute()), Theme.HEROINAS);
+        }
+
+        dibujarNodos(g2, positions, n, dibujo.getSource(), dibujo.getDestination());
+    }
+
     private Point2D.Double[] layoutFor(int nodeCount) {
         int margen = 40;
         double radio = (Math.min(getWidth(), getHeight()) - 2 * margen) / 2.0;
@@ -111,6 +140,11 @@ public class GraphCanvas extends JPanel implements MissionCanvas {
     }
 
     private void dibujarAristas(Graphics2D g2, Graph graph, Point2D.Double[] positions, Set<Long> resaltadas) {
+        dibujarAristas(g2, graph, positions, resaltadas, Theme.HEROINAS);
+    }
+
+    private void dibujarAristas(Graphics2D g2, Graph graph, Point2D.Double[] positions,
+                                Set<Long> resaltadas, Color colorResaltado) {
         for (Edge edge : graph.getAllEdges()) {
             if (edge.getFrom() == edge.getTo()) {
                 continue;
@@ -124,7 +158,7 @@ public class GraphCanvas extends JPanel implements MissionCanvas {
                 continue;
             }
             if (resaltadas.contains(edgeKey(edge.getFrom(), edge.getTo()))) {
-                trazarLinea(g2, positions[edge.getFrom()], positions[edge.getTo()], Theme.HEROINAS, 3f);
+                trazarLinea(g2, positions[edge.getFrom()], positions[edge.getTo()], colorResaltado, 3f);
             }
         }
     }
