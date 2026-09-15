@@ -48,11 +48,7 @@ public class BellmanFord {
         }
         dist[source] = 0L;
 
-        // N - 1 rondas de relajacion. Con N nodos, cualquier camino
-        // SIMPLE (sin repetir nodos) tiene a lo sumo N - 1 aristas, asi
-        // que N - 1 rondas alcanzan para que dist[] converja en todo
-        // nodo que no dependa de un ciclo. Lo que quede sin converger
-        // despues de esto es, por construccion, cosa de un ciclo.
+
         for (int round = 0; round < n - 1; round++) {
             boolean changed = false;
             for (Edge edge : edges) {

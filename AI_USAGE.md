@@ -50,7 +50,11 @@ Todo el código fue revisado, corregido y probado por los integrantes.
    quedado rotulada como "Misión 3". Se corrigio sacando el número del
    propio getName() de cada misión en vez de su posición en la lista.   
 
-(Persona 2: agregar los suyos)
+5. **Orden de escritura en la pasada de no acotado de Floyd-Warshall.** La primera versión marcaba cada par no acotado 
+escribiendo directamente sobre la matriz d[i][j] mientras la recorría, así que podía leer un d[k][k] que ya había sido 
+modificado en esa misma pasada. Seguía dando el resultado correcto, pero el porqué dependía del orden de las 
+iteraciones. Se corrigió calculando primero todas las marcas en una matriz booleana aparte, y aplicándolas recién 
+al final: mismo resultado, pero ahora el orden nunca importa.
 
 ## Qué aprendió cada integrante
 
@@ -60,6 +64,12 @@ avanza por niveles, mientras el DFS llega a Nina en 32 movimientos en vez de 18.
 cómo reemplazar la recursión por una pila explícita y por qué aquí es obligatorio: con
 un millón de celdas, un DFS recursivo desborda la pila de la JVM.
 
+**Persona 2 (Alejandro Sánchez López).** Aprendí que Bellman-Ford no revisa el grafo una sola vez sino que lo recorre 
+varias rondas, y el número de rondas está ligado a cuántos nodos hay. Al final la idea es que si no hay nada raro en el 
+grafo, después de esas rondas ya no debería haber forma de seguir mejorando el resultado. Entonces, si al hacer una 
+ronda extra el resultado todavía mejora, eso es una señal clara de que hay un ciclo por el que se puede dar vueltas 
+ganando cada vez más, no quiere decir que faltaron rondas.
+
 **Persona 3 (Juan José Díaz).** Por qué Dijkstra necesita pesos no negativos: si un nodo
 ya sale de la cola de prioridad se asume que su distancia es definitiva, y
 eso solo es verdad si no hay pesos negativos que puedan mejorarla despues.
@@ -67,5 +77,4 @@ Tambien la diferencia entre Kruskal y Prim (Kruskal ordena todas las aristas
 de una vez; Prim crece un árbol desde un nodo con una cola de prioridad de
 aristas frontera), y por qué quitar la compresión de caminos del union-find
 no rompe la correctitud pero si el tiempo de ejecución.
-(Persona 2: completar)
 
