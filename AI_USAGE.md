@@ -61,12 +61,11 @@ cómo reemplazar la recursión por una pila explícita y por qué aquí es oblig
 un millón de celdas, un DFS recursivo desborda la pila de la JVM.
 
 **Persona 3 (Juan José Díaz).** Por qué Dijkstra necesita pesos no negativos: si un nodo
-ya "sale" de la cola de prioridad se asume que su distancia es definitiva, y
+ya sale de la cola de prioridad se asume que su distancia es definitiva, y
 eso solo es verdad si no hay pesos negativos que puedan mejorarla despues.
-Tambien la diferencia entre Kruskal y Prim (Kruskal ordena TODAS las aristas
+Tambien la diferencia entre Kruskal y Prim (Kruskal ordena todas las aristas
 de una vez; Prim crece un árbol desde un nodo con una cola de prioridad de
 aristas frontera), y por qué quitar la compresión de caminos del union-find
 no rompe la correctitud pero si el tiempo de ejecución.
 (Persona 2: completar)
 
-(Persona 3: completar)
