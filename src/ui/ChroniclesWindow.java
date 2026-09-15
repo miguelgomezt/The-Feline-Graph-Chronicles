@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ChroniclesWindow extends JFrame {
 
     private final JTabbedPane pestanas = new JTabbedPane();

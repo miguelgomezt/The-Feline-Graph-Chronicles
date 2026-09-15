@@ -45,7 +45,6 @@ public class StashMission implements Mission {
         TokenStream in = new TokenStream(input);
         MissionOutcome outcome = new MissionOutcome();
 
-
         int totalCases = in.nextIntInRange(0, 1_000_000, "La cantidad de casos de prueba (T).");
 
         for (int caseNumber = 1; caseNumber <= totalCases; caseNumber++) {
@@ -60,6 +59,7 @@ public class StashMission implements Mission {
 
             String prefix = "Case #" + caseNumber + ": ";
 
+
             String line;
             if (bellmanFord.isUnreachable(destination)) {
                 line = prefix + "Limon blocked the way";
@@ -73,24 +73,53 @@ public class StashMission implements Mission {
                     ? null
                     : prefix + crossCheck.mismatchMessage(source, destination);
 
-            outcome.addCase(line, new StashDrawing(matrix, source, destination, mismatchWarning));
+            int[] route = null;
+            int[] cycle = null;
+            if (bellmanFord.isUnbounded(destination)) {
+                cycle = bellmanFord.responsibleCycle(destination);
+            } else if (!bellmanFord.isUnreachable(destination)) {
+                route = bellmanFord.routeTo(destination);
+            }
+
+            outcome.addCase(line, new StashDrawing(
+                    graph, matrix, source, destination, route, cycle, mismatchWarning));
         }
 
         return outcome;
     }
 
-
+    /**
+     * Datos de dibujo de un caso de la Mision 3. Dos paneles distintos
+     * leen este mismo objeto: MatrixPanel pinta la matriz N x N que
+     * devolvio Floyd-Warshall (con "-" para sin ruta e "inf" para no
+     * acotado, mas el aviso de discrepancia si Floyd-Warshall y
+     * Bellman-Ford no coincidieron para (S, D)), y StashGraphCanvas
+     * pinta el grafo dirigido resaltando route (la ruta que logra el
+     * maximo) o cycle (el ciclo de ganancia positiva responsable),
+     * segun cual de los dos no sea null.
+     */
     public static class StashDrawing {
+        private final Graph graph;
         private final long[][] matrix;
         private final int source;
         private final int destination;
+        private final int[] route;   // null si no aplica (inalcanzable o no acotado)
+        private final int[] cycle;   // null si no aplica (alcanzable y acotado)
         private final String mismatchWarning; // null si los dos algoritmos coincidieron
 
-        public StashDrawing(long[][] matrix, int source, int destination, String mismatchWarning) {
+        public StashDrawing(Graph graph, long[][] matrix, int source, int destination,
+                            int[] route, int[] cycle, String mismatchWarning) {
+            this.graph = graph;
             this.matrix = matrix;
             this.source = source;
             this.destination = destination;
+            this.route = route;
+            this.cycle = cycle;
             this.mismatchWarning = mismatchWarning;
+        }
+
+        public Graph getGraph() {
+            return graph;
         }
 
         public long[][] getMatrix() {
@@ -103,6 +132,14 @@ public class StashMission implements Mission {
 
         public int getDestination() {
             return destination;
+        }
+
+        public int[] getRoute() {
+            return route;
+        }
+
+        public int[] getCycle() {
+            return cycle;
         }
 
         public boolean hasMismatch() {
