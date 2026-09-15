@@ -1,9 +1,13 @@
 package ui;
 
 import io.InputFormatException;
+import mission.AccountsMission;
 import mission.Mission;
 import mission.MissionOutcome;
+import mission.NetworkMission;
+import ui.draw.GraphCanvas;
 import ui.draw.GridCanvas;
+import ui.draw.MissionCanvas;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,11 +31,35 @@ public class MissionPanel extends JPanel {
     private final JTextArea areaSalida = new JTextArea();
     private final JLabel etiquetaEstado = new JLabel(" ");
     private final JComboBox<String> selectorCaso = new JComboBox<String>();
-    private final GridCanvas canvas = new GridCanvas();
+
+    // "canvas" es el JPanel real que se mete en el layout (BorderLayout.CENTER);
+    // "dibujoCanvas" es la MISMA instancia, vista como MissionCanvas, para poder
+    // llamarle setDrawing/limpiar sin que MissionPanel tenga que saber si es un
+    // GridCanvas, un GraphCanvas o (cuando este listo) un MatrixPanel.
+    private final JPanel canvas;
+    private final MissionCanvas dibujoCanvas;
+
     private MissionOutcome ultimoResultado;
 
     public MissionPanel(Mission mission) {
         this.mission = mission;
+
+        // Cada MissionPanel se crea para UNA sola mision (ver ChroniclesWindow),
+        // asi que el canvas se elige una sola vez aqui, segun el tipo de mision.
+        if (mission instanceof AccountsMission || mission instanceof NetworkMission) {
+            GraphCanvas graphCanvas = new GraphCanvas();
+            this.canvas = graphCanvas;
+            this.dibujoCanvas = graphCanvas;
+        } else {
+            // Por ahora, cualquier otra mision (Mision 1, y Mision 3 hasta que
+            // Persona 2 tenga su MatrixPanel implementando MissionCanvas) usa
+            // el canvas de grilla. Cuando MatrixPanel este listo, se agrega:
+            // else if (mission instanceof StashMission) { ... }
+            GridCanvas gridCanvas = new GridCanvas();
+            this.canvas = gridCanvas;
+            this.dibujoCanvas = gridCanvas;
+        }
+
         setLayout(new BorderLayout(8, 8));
         setBackground(Theme.FONDO);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -187,14 +215,14 @@ public class MissionPanel extends JPanel {
             estado("Resueltos " + ultimoResultado.getCaseCount() + " caso(s).", Theme.TEXTO_TENUE);
         } catch (InputFormatException ex) {
             ultimoResultado = null;
-            canvas.limpiar();
+            dibujoCanvas.limpiar();
             selectorCaso.removeAllItems();
             areaSalida.setForeground(Theme.MINA);
             areaSalida.setText("Error en la entrada:\n" + ex.getMessage());
             estado(ex.getMessage(), Theme.MINA);
         } catch (RuntimeException ex) {
             ultimoResultado = null;
-            canvas.limpiar();
+            dibujoCanvas.limpiar();
             selectorCaso.removeAllItems();
             areaSalida.setForeground(Theme.MINA);
             areaSalida.setText("No se pudo resolver la mision.\nRevise el formato de la entrada.");
@@ -206,7 +234,7 @@ public class MissionPanel extends JPanel {
         areaEntrada.setText("");
         areaSalida.setText("");
         selectorCaso.removeAllItems();
-        canvas.limpiar();
+        dibujoCanvas.limpiar();
         ultimoResultado = null;
         estado(" ", Theme.TEXTO_TENUE);
     }
@@ -229,7 +257,7 @@ public class MissionPanel extends JPanel {
         if (indice < 0 || indice >= ultimoResultado.getCaseCount()) {
             return;
         }
-        canvas.setDrawing(ultimoResultado.getDrawings().get(indice));
+        dibujoCanvas.setDrawing(ultimoResultado.getDrawings().get(indice));
     }
 
     private void estado(String texto, java.awt.Color color) {
