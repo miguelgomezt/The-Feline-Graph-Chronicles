@@ -2,19 +2,16 @@ package algoritmos.maxwalk;
 
 import core.Graph;
 import core.Sentinels;
+import org.junit.jupiter.api.Test;
 
-public class BellmanFordTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    public static void main(String[] args) {
-        checkCase1();
-        checkCase2();
-        checkCase3();
-        checkUnreachable();
-        System.out.println("BellmanFordTest: todas las pruebas pasaron.");
-    }
+class BellmanFordTest {
 
-
-    static void checkCase1() {
+    @Test
+    void case1MaximoFinito() {
         Graph graph = new Graph(5, true);
         graph.addEdge(0, 1, 50);
         graph.addEdge(0, 2, 10);
@@ -25,13 +22,13 @@ public class BellmanFordTest {
         graph.addEdge(3, 4, 20);
 
         BellmanFord.Result result = BellmanFord.solve(graph, 0);
-        expect("Caso 1 (0 -> 4)", 110L, result.distanceTo(4));
-        if (result.isUnbounded(4) || result.isUnreachable(4)) {
-            throw new AssertionError("Caso 1: el nodo 4 no deberia estar marcado como no acotado ni inalcanzable.");
-        }
+        assertEquals(110L, result.distanceTo(4), "Caso 1 (0 -> 4)");
+        assertFalse(result.isUnbounded(4));
+        assertFalse(result.isUnreachable(4));
     }
 
-    static void checkCase2() {
+    @Test
+    void case2CicloPositivoNoAcotado() {
         Graph graph = new Graph(4, true);
         graph.addEdge(0, 1, 20);
         graph.addEdge(1, 2, 30);
@@ -39,40 +36,28 @@ public class BellmanFordTest {
         graph.addEdge(2, 3, 15);
 
         BellmanFord.Result result = BellmanFord.solve(graph, 0);
-        if (!result.isUnbounded(3)) {
-            throw new AssertionError("Caso 2: el nodo 3 deberia quedar marcado como no acotado.");
-        }
-        expect("Caso 2 (0 -> 3) no acotado", Sentinels.UNBOUNDED, result.distanceTo(3));
-        System.out.println("OK - Caso 2 (0 -> 3) = Infinite churun!");
+        assertTrue(result.isUnbounded(3), "Caso 2 (0 -> 3) deberia quedar no acotado");
+        assertEquals(Sentinels.UNBOUNDED, result.distanceTo(3));
     }
 
-    static void checkCase3() {
+    @Test
+    void case3MaximoNegativo() {
         Graph graph = new Graph(3, true);
         graph.addEdge(0, 1, -40);
         graph.addEdge(1, 2, -25);
         graph.addEdge(0, 2, -80);
 
         BellmanFord.Result result = BellmanFord.solve(graph, 0);
-        expect("Caso 3 (0 -> 2)", -65L, result.distanceTo(2));
+        assertEquals(-65L, result.distanceTo(2), "Caso 3 (0 -> 2)");
     }
 
-
-    static void checkUnreachable() {
+    @Test
+    void nodoSueltoQuedaInalcanzable() {
         Graph graph = new Graph(3, true);
         graph.addEdge(0, 1, 10);
         // el nodo 2 no tiene ninguna arista que llegue a el
 
         BellmanFord.Result result = BellmanFord.solve(graph, 0);
-        if (!result.isUnreachable(2)) {
-            throw new AssertionError("El nodo 2 deberia ser inalcanzable desde 0.");
-        }
-        System.out.println("OK - nodo suelto queda inalcanzable");
-    }
-
-    private static void expect(String label, long expected, long actual) {
-        if (expected != actual) {
-            throw new AssertionError(label + ": se esperaba " + expected + " pero dio " + actual);
-        }
-        System.out.println("OK - " + label + " = " + actual);
+        assertTrue(result.isUnreachable(2), "El nodo 2 deberia ser inalcanzable desde 0");
     }
 }

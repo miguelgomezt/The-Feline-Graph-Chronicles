@@ -3,16 +3,14 @@ package mission;
 import algoritmos.maxwalk.BellmanFord;
 import algoritmos.maxwalk.CrossCheck;
 import algoritmos.maxwalk.FloydWarshall;
+import core.Graph;
 import io.StashReader;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.TokenStream;
 
 
-public class StashMission {
+public class StashMission implements Mission {
 
-
-    public static final String SAMPLE_INPUT =
+    private static final String SAMPLE =
             "3\n"
                     + "5 7 0 4\n"
                     + "0 1 50\n"
@@ -32,36 +30,70 @@ public class StashMission {
                     + "1 2 -25\n"
                     + "0 2 -80\n";
 
-    public String name() {
+    @Override
+    public String getName() {
         return "Mision 3: La reserva definitiva de churun";
     }
 
-    public String sampleInput() {
-        return SAMPLE_INPUT;
+    @Override
+    public String getSampleInput() {
+        return SAMPLE;
+    }
+
+    @Override
+    public MissionOutcome solve(String input) {
+        TokenStream in = new TokenStream(input);
+        MissionOutcome outcome = new MissionOutcome();
+
+
+        int totalCases = in.nextIntInRange(0, 1_000_000, "La cantidad de casos de prueba (T).");
+
+        for (int caseNumber = 1; caseNumber <= totalCases; caseNumber++) {
+            StashReader.StashCase testCase = StashReader.readCase(in);
+            Graph graph = testCase.getGraph();
+            int source = testCase.getSource();
+            int destination = testCase.getDestination();
+
+            long[][] matrix = FloydWarshall.solve(graph);
+            BellmanFord.Result bellmanFord = BellmanFord.solve(graph, source);
+            CrossCheck.Result crossCheck = CrossCheck.compare(matrix, bellmanFord, source, destination);
+
+            String prefix = "Case #" + caseNumber + ": ";
+
+            String line;
+            if (bellmanFord.isUnreachable(destination)) {
+                line = prefix + "Limon blocked the way";
+            } else if (bellmanFord.isUnbounded(destination)) {
+                line = prefix + "Infinite churun!";
+            } else {
+                line = prefix + bellmanFord.distanceTo(destination);
+            }
+
+            String mismatchWarning = crossCheck.agree()
+                    ? null
+                    : prefix + crossCheck.mismatchMessage(source, destination);
+
+            outcome.addCase(line, new StashDrawing(matrix, source, destination, mismatchWarning));
+        }
+
+        return outcome;
     }
 
 
-    public static class CaseResult {
-        private final String outputLine;
+    public static class StashDrawing {
         private final long[][] matrix;
         private final int source;
         private final int destination;
-        private final String mismatchWarning; // null si los dos algoritmos coinciden
+        private final String mismatchWarning; // null si los dos algoritmos coincidieron
 
-        CaseResult(String outputLine, long[][] matrix, int source, int destination,
-                   String mismatchWarning) {
-            this.outputLine = outputLine;
+        public StashDrawing(long[][] matrix, int source, int destination, String mismatchWarning) {
             this.matrix = matrix;
             this.source = source;
             this.destination = destination;
             this.mismatchWarning = mismatchWarning;
         }
 
-        public String getOutputLine() {
-            return outputLine;
-        }
-
-         public long[][] getMatrix() {
+        public long[][] getMatrix() {
             return matrix;
         }
 
@@ -77,69 +109,8 @@ public class StashMission {
             return mismatchWarning != null;
         }
 
-        /** null si Floyd-Warshall y Bellman-Ford coincidieron. */
         public String getMismatchWarning() {
             return mismatchWarning;
         }
-    }
-
-    public static class StashOutcome {
-        private final List<CaseResult> cases;
-
-        StashOutcome(List<CaseResult> cases) {
-            this.cases = cases;
-        }
-
-        public List<CaseResult> getCases() {
-            return cases;
-        }
-
-         public String outputText() {
-            StringBuilder sb = new StringBuilder();
-            for (CaseResult c : cases) {
-                sb.append(c.getOutputLine()).append('\n');
-            }
-            return sb.toString();
-        }
-    }
-
-    public StashOutcome solve(String rawInput) {
-        List<StashReader.StashCase> testCases = StashReader.parse(rawInput);
-        List<CaseResult> results = new ArrayList<>(testCases.size());
-
-        int caseNumber = 1;
-        for (StashReader.StashCase testCase : testCases) {
-            results.add(solveOne(caseNumber, testCase));
-            caseNumber++;
-        }
-
-        return new StashOutcome(results);
-    }
-
-    private CaseResult solveOne(int caseNumber, StashReader.StashCase testCase) {
-        int source = testCase.getSource();
-        int destination = testCase.getDestination();
-
-        long[][] matrix = FloydWarshall.solve(testCase.getGraph());
-        BellmanFord.Result bellmanFord = BellmanFord.solve(testCase.getGraph(), source);
-
-        CrossCheck.Result crossCheck = CrossCheck.compare(matrix, bellmanFord, source, destination);
-        String mismatchWarning = crossCheck.agree()
-                ? null
-                : "Case #" + caseNumber + ": " + crossCheck.mismatchMessage(source, destination);
-
-        String prefix = "Case #" + caseNumber + ": ";
-
-
-        String outputLine;
-        if (bellmanFord.isUnreachable(destination)) {
-            outputLine = prefix + "Limon blocked the way";
-        } else if (bellmanFord.isUnbounded(destination)) {
-            outputLine = prefix + "Infinite churun!";
-        } else {
-            outputLine = prefix + bellmanFord.distanceTo(destination);
-        }
-
-        return new CaseResult(outputLine, matrix, source, destination, mismatchWarning);
     }
 }

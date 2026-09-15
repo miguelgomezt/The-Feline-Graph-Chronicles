@@ -1,7 +1,10 @@
 package ui.draw;
 
 import core.Sentinels;
+import mission.StashMission;
+import ui.Theme;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -9,21 +12,51 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 
 
-public class MatrixPanel extends JPanel {
+public class MatrixPanel extends JPanel implements MissionCanvas {
+
+    private final JLabel mensajeVacio = new JLabel("Sin datos todavia. Pulse Resolver.");
+    private final JLabel avisoDiscrepancia = new JLabel(" ");
+    private final JScrollPane scrollPane = new JScrollPane();
 
     public MatrixPanel() {
-        super(new BorderLayout());
+        super(new BorderLayout(0, 6));
+        setBackground(Theme.PANEL);
+
+        mensajeVacio.setForeground(Theme.TEXTO_TENUE);
+        mensajeVacio.setFont(Theme.NORMAL);
+
+        avisoDiscrepancia.setForeground(Theme.MINA);
+        avisoDiscrepancia.setFont(Theme.NORMAL);
+        avisoDiscrepancia.setVisible(false);
+
+        add(mensajeVacio, BorderLayout.CENTER);
+        add(avisoDiscrepancia, BorderLayout.SOUTH);
     }
 
-    public MatrixPanel(long[][] matrix) {
-        this();
-        setMatrix(matrix);
+    @Override
+    public void setDrawing(Object data) {
+        if (data instanceof StashMission.StashDrawing) {
+            mostrar((StashMission.StashDrawing) data);
+        } else {
+            limpiar();
+        }
     }
 
-     public void setMatrix(long[][] matrix) {
+    @Override
+    public void limpiar() {
+        removeAll();
+        avisoDiscrepancia.setVisible(false);
+        add(mensajeVacio, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrar(StashMission.StashDrawing dibujo) {
         removeAll();
 
+        long[][] matrix = dibujo.getMatrix();
         int n = matrix.length;
+
         String[] columnNames = new String[n + 1];
         columnNames[0] = "";
         for (int j = 0; j < n; j++) {
@@ -48,8 +81,17 @@ public class MatrixPanel extends JPanel {
         JTable table = new JTable(model);
         table.setEnabled(false);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setFont(Theme.MONO);
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        scrollPane.setViewportView(table);
+        add(scrollPane, BorderLayout.CENTER);
+
+        if (dibujo.hasMismatch()) {
+            avisoDiscrepancia.setText(dibujo.getMismatchWarning());
+            avisoDiscrepancia.setVisible(true);
+        } else {
+            avisoDiscrepancia.setVisible(false);
+        }
 
         revalidate();
         repaint();

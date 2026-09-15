@@ -1,12 +1,10 @@
 package ui;
 
 import io.InputFormatException;
-import mission.AccountsMission;
-import mission.Mission;
-import mission.MissionOutcome;
-import mission.NetworkMission;
+import mission.*;
 import ui.draw.GraphCanvas;
 import ui.draw.GridCanvas;
+import ui.draw.MatrixPanel;
 import ui.draw.MissionCanvas;
 
 import javax.swing.BorderFactory;
@@ -50,11 +48,11 @@ public class MissionPanel extends JPanel {
             GraphCanvas graphCanvas = new GraphCanvas();
             this.canvas = graphCanvas;
             this.dibujoCanvas = graphCanvas;
+        } else if (mission instanceof StashMission) {
+        MatrixPanel matrixPanel = new MatrixPanel();
+        this.canvas = matrixPanel;
+        this.dibujoCanvas = matrixPanel;
         } else {
-            // Por ahora, cualquier otra mision (Mision 1, y Mision 3 hasta que
-            // Persona 2 tenga su MatrixPanel implementando MissionCanvas) usa
-            // el canvas de grilla. Cuando MatrixPanel este listo, se agrega:
-            // else if (mission instanceof StashMission) { ... }
             GridCanvas gridCanvas = new GridCanvas();
             this.canvas = gridCanvas;
             this.dibujoCanvas = gridCanvas;

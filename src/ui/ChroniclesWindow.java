@@ -1,9 +1,6 @@
 package ui;
 
-import mission.AccountsMission;
-import mission.MinefieldMission;
-import mission.Mission;
-import mission.NetworkMission;
+import mission.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -41,9 +38,9 @@ public class ChroniclesWindow extends JFrame {
         misiones.add(new AccountsMission());
         nombres.add("Mision 2");
 
-        // Cuando Persona 2 entregue StashMission, descomentar estas dos lineas:
-        // misiones.add(new StashMission());
-        // nombres.add("Mision 3");
+
+         misiones.add(new StashMission());
+         nombres.add("Mision 3");
 
         misiones.add(new NetworkMission());
         nombres.add("Mision 4");
