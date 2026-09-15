@@ -1,7 +1,9 @@
 package ui;
 
+import mission.AccountsMission;
 import mission.MinefieldMission;
 import mission.Mission;
+import mission.NetworkMission;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -31,7 +33,20 @@ public class ChroniclesWindow extends JFrame {
         add(construirEncabezado(), BorderLayout.NORTH);
 
         List<Mission> misiones = new ArrayList<Mission>();
+        List<String> nombres = new ArrayList<String>();
+
         misiones.add(new MinefieldMission());
+        nombres.add("Mision 1");
+
+        misiones.add(new AccountsMission());
+        nombres.add("Mision 2");
+
+        // Cuando Persona 2 entregue StashMission, descomentar estas dos lineas:
+        // misiones.add(new StashMission());
+        // nombres.add("Mision 3");
+
+        misiones.add(new NetworkMission());
+        nombres.add("Mision 4");
 
         pestanas.setFont(Theme.NORMAL);
         pestanas.setBackground(Theme.FONDO);
@@ -41,10 +56,12 @@ public class ChroniclesWindow extends JFrame {
 
         for (int i = 0; i < misiones.size(); i++) {
             Mission mision = misiones.get(i);
-            pestanas.addTab("Mision " + (i + 1), new MissionPanel(mision));
+            String nombre = nombres.get(i);
+
+            pestanas.addTab(nombre, new MissionPanel(mision));
             pestanas.setToolTipTextAt(i, mision.getName());
 
-            JLabel etiqueta = new JLabel("Mision " + (i + 1));
+            JLabel etiqueta = new JLabel(nombre);
             etiqueta.setFont(Theme.NORMAL);
             etiqueta.setOpaque(true);
             etiqueta.setBorder(BorderFactory.createEmptyBorder(7, 18, 7, 18));
