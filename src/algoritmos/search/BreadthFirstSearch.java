@@ -56,16 +56,18 @@ public class BreadthFirstSearch {
         parent[start] = -1;
 
         while (head < tail) {
-            int cur = queue[head];
-            head++;
+            int cur = queue[head]; //Sacamos la celda del frente
+            head++; //y avanzamos al frente de la cola
 
-            int row = grid.rowOf(cur);
-            int col = grid.colOf(cur);
+            int row = grid.rowOf(cur); //Pasamos a fila columna
+            int col = grid.colOf(cur); //para poder movernos por el tablero.
 
+            //Probamos los 4 vecinos: arriba, abajo, izquierda, derecha
             for (int d = 0; d < 4; d++){
-                int newRow = row + DELTA_ROW[d];
-                int newCol = col + DELTA_COL[d];
+                int newRow = row + DELTA_ROW[d]; //Fila del vecino
+                int newCol = col + DELTA_COL[d]; //Columna del vecino
 
+                //Revisamos si hay bomba y que no salgamos del mapa
                 if(!grid.canEnter(newRow, newCol)){
                     continue;
                 }
@@ -75,6 +77,10 @@ public class BreadthFirstSearch {
                    continue;
                 }
 
+                /**
+                 * Primera vez que llegamos a este vecino, como
+                 * avanzamos por niveles (BFS) esta distancia es la minima.
+                 */
                 visited[neighbor] = true;
                 distances[neighbor] = distances[cur] + 1;
                 parent[neighbor] = cur;
