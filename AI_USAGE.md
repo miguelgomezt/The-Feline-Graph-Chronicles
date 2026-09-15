@@ -7,7 +7,8 @@
 - **Claude (Anthropic)** — Persona 3: Dijkstra, Kruskal y Union-Find, los parsers
   de las Misiones 2 y 4 (AccountsReader, NetworkReader) y el motor de dibujo
   compartido (GraphLayout, GraphCanvas, DrawingLimits).
-- (Persona 2: completar)
+- **Claude (Anthropic)** — Persona 2: usado para diseñar los paquetes e implementar 
+ las clases completas de la Misión 3. Además se uso para crear las pruebas de humo (test)
 
 Todo el código fue revisado, corregido y probado por los integrantes.
 
