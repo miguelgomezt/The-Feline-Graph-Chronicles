@@ -33,7 +33,7 @@ public class MissionPanel extends JPanel {
     // "canvas" es el JPanel real que se mete en el layout (BorderLayout.CENTER);
     // "dibujoCanvas" es la MISMA instancia, vista como MissionCanvas, para poder
     // llamarle setDrawing/limpiar sin que MissionPanel tenga que saber si es un
-    // GridCanvas, un GraphCanvas o (cuando este listo) un MatrixPanel.
+    // GridCanvas, un GraphCanvas o un MatrixPanel.
     private final JPanel canvas;
     private final MissionCanvas dibujoCanvas;
 
@@ -49,9 +49,9 @@ public class MissionPanel extends JPanel {
             this.canvas = graphCanvas;
             this.dibujoCanvas = graphCanvas;
         } else if (mission instanceof StashMission) {
-        MatrixPanel matrixPanel = new MatrixPanel();
-        this.canvas = matrixPanel;
-        this.dibujoCanvas = matrixPanel;
+            MatrixPanel matrixPanel = new MatrixPanel();
+            this.canvas = matrixPanel;
+            this.dibujoCanvas = matrixPanel;
         } else {
             GridCanvas gridCanvas = new GridCanvas();
             this.canvas = gridCanvas;
@@ -139,6 +139,8 @@ public class MissionPanel extends JPanel {
 
         areaSalida.setFont(Theme.MONO);
         areaSalida.setEditable(false);
+        areaSalida.setLineWrap(true);
+        areaSalida.setWrapStyleWord(true);
         areaSalida.setBackground(Theme.PANEL);
         areaSalida.setForeground(Theme.HEROINAS);
 
@@ -159,16 +161,47 @@ public class MissionPanel extends JPanel {
         return panel;
     }
 
+    // La leyenda cambia segun la mision: cada dibujo resalta cosas distintas,
+    // asi que dejar siempre "Camino BFS / DFS / Mina" confundiria al evaluador
+    // cuando esta viendo un grafo de rutas, uno de cables o una matriz.
     private JPanel construirLeyenda() {
         JPanel leyenda = new JPanel();
         leyenda.setLayout(new BoxLayout(leyenda, BoxLayout.X_AXIS));
         leyenda.setBackground(Theme.FONDO);
         leyenda.setBorder(BorderFactory.createEmptyBorder(6, 4, 0, 4));
-        leyenda.add(itemLeyenda("Camino BFS", Theme.HEROINAS));
-        leyenda.add(Box.createHorizontalStrut(12));
-        leyenda.add(itemLeyenda("Camino DFS", Theme.DFS));
-        leyenda.add(Box.createHorizontalStrut(12));
-        leyenda.add(itemLeyenda("Mina", Theme.MINA));
+
+        if (mission instanceof MinefieldMission) {
+            leyenda.add(itemLeyenda("Camino BFS", Theme.HEROINAS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Camino DFS", Theme.DFS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Mina", Theme.MINA));
+
+        } else if (mission instanceof AccountsMission) {
+            leyenda.add(itemLeyenda("Ruta mas barata", Theme.HEROINAS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Conexion no usada", Theme.BORDE));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Destino", Theme.NINA));
+
+        } else if (mission instanceof NetworkMission) {
+            leyenda.add(itemLeyenda("Cable usado (MST)", Theme.HEROINAS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Cable descartado", Theme.BORDE));
+
+        } else if (mission instanceof StashMission) {
+            leyenda.add(itemLeyenda("Churun maximo entre pares", Theme.HEROINAS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("Sin ruta ( - )", Theme.BORDE));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("No acotado ( inf )", Theme.LIMON));
+
+        } else {
+            leyenda.add(itemLeyenda("Resultado resaltado", Theme.HEROINAS));
+            leyenda.add(Box.createHorizontalStrut(12));
+            leyenda.add(itemLeyenda("No usado", Theme.BORDE));
+        }
+
         leyenda.add(Box.createHorizontalGlue());
         return leyenda;
     }
